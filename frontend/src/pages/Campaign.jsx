@@ -146,6 +146,7 @@ export default function Campaign() {
   const [contributions, setContributions] = useState(null);
   const [totalContributions, setTotalContributions] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const BACKER_LIMIT = 100;
   const [showModal, setShowModal] = useState(false);
   const [showDisputeModal, setShowDisputeModal] = useState(false);
   const [disputeSubmitted, setDisputeSubmitted] = useState(false);
@@ -222,7 +223,7 @@ export default function Campaign() {
       })
       .catch((err) => setLoadError(err.message || "Could not load campaign."));
     api
-      .getContributions(id, { limit: showAll ? 100 : 10, offset: 0 })
+      .getContributions(id, { limit: showAll ? BACKER_LIMIT : 10, offset: 0 })
       .then((data) => {
         setContributions(data.contributions || []);
         setTotalContributions(data.total || 0);
@@ -282,7 +283,7 @@ export default function Campaign() {
       try {
         const [nextCampaign, nextContributionsData] = await Promise.all([
           api.getCampaign(id),
-          api.getContributions(id, { limit: showAll ? 100 : 10, offset: 0 }),
+          api.getContributions(id, { limit: showAll ? BACKER_LIMIT : 10, offset: 0 }),
         ]);
         if (aborted) return;
         setCampaign(nextCampaign);
@@ -381,6 +382,9 @@ export default function Campaign() {
             const updated = [msg.contribution, ...current];
             if (!showAllRef.current && updated.length > 10) {
               return updated.slice(0, 10);
+            }
+            if (showAllRef.current && updated.length > BACKER_LIMIT) {
+              return updated.slice(0, BACKER_LIMIT);
             }
             return updated;
           });
@@ -1772,7 +1776,11 @@ export default function Campaign() {
                   cursor: "pointer",
                 }}
               >
-                {showAll ? "Show less" : `Show all (${totalContributions})`}
+                {showAll
+                  ? "Show less"
+                  : totalContributions > BACKER_LIMIT
+                  ? `Show top ${BACKER_LIMIT} of ${totalContributions}`
+                  : `Show all (${totalContributions})`}
               </button>
             </div>
           )}
