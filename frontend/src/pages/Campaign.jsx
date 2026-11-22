@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { shareOnX } from '../utils/shareOnX';
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -1007,12 +1008,8 @@ export default function Campaign() {
             gap: "0.5rem",
           }}
           onClick={() => {
-            const text = encodeURIComponent(
+            shareOnX(
               `I just backed ${campaign.title} on CrowdPay — ${pct}% funded with ${campaign.contributor_count || 0} backers. Join me: ${window.location.href}`,
-            );
-            window.open(
-              `https://twitter.com/intent/tweet?text=${text}`,
-              "_blank",
             );
           }}
         >
@@ -2459,6 +2456,7 @@ const styles = {
   },
 };
 import React, { useEffect, useState, useRef } from "react";
+import { shareOnX } from "../utils/shareOnX";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -3628,15 +3626,9 @@ export default function Campaign() {
             gap: '0.5rem',
           }}
           onClick={() => {
-            const text = encodeURIComponent(
+            shareOnX(
               `I just backed ${campaign.title} on CrowdPay — ${pct}% funded with ${campaign.contributor_count || 0} backers. Join me: ${window.location.href}`,
             );
-            window.open(
-              `https://twitter.com/intent/tweet?text=${text}`,
-              "_blank",
-              "noopener,noreferrer",
-            );
-            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
           }}
         >
           Share on X
